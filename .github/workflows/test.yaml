@@ -1,0 +1,19 @@
+name: Test
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  run-unit-test:
+    runs-on: ubuntu-latest
+    name: Run unit tests
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: run jest test
+        run: npm run test
