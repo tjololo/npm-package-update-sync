@@ -2,15 +2,15 @@ name: 'NPM package sync and update'
 description: 'Github action that checks for updates and synchronises version package.json'
 inputs:
   root-folder:
-    description: 'folder where package json is located'
+    description: 'relative path from repository root where the action should look for `package.json` files'
     required: true
     default: '.'
   recursive:
-    description: 'should the action look for package.json in sub-folders'
+    description: 'wether or not the action should look for package.json in sub-folders and update all of them'
     required: true
     default: 'true'
   comment-updated:
-    description: 'include actually updated versions in PR'
+    description: 'wheter or not the dependencies that are update should be included in the body output'
     required: true
     default: 'false'
 
