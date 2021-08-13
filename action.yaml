@@ -1,5 +1,8 @@
 name: 'NPM package sync and update'
 description: 'Github action that checks for updates and synchronises version package.json'
+branding:
+  icon: arrow-up-circle
+  color: gray-dark
 inputs:
   root-folder:
     description: 'relative path from repository root where the action should look for `package.json` files'
