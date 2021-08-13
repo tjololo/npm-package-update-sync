@@ -47,7 +47,9 @@ function execute() {
         try {
             const recursive = yield core.getBooleanInput("recursive");
             const rootFolder = yield core.getInput("root-folder");
+            core.startGroup("Find modules");
             const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
+            core.endGroup();
             let body = "";
             for (const folder in folders) {
                 const packageJson = path.join(folder, 'package.json');
@@ -243,30 +245,30 @@ const core_1 = __nccwpck_require__(186);
 const fs_1 = __nccwpck_require__(747);
 const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
+        const files = yield fs_1.readdirSync(rootFolder);
+        const regex = new RegExp(`\\package.json$`);
+        for (const fileName of files) {
+            const file = path_1.join(rootFolder, fileName);
+            if (fs_1.statSync(file).isDirectory()) {
+                try {
+                    result = yield exports.getAllProjects(file, recursive, result);
+                }
+                catch (error) {
+                    continue;
+                }
+            }
+            else {
+                if (regex.test(file)) {
+                    core_1.info(`module found : ${file}`);
+                    result.push(fileName);
+                }
+            }
+        }
+        return result;
     }
     else {
         return [rootFolder];
     }
-    const files = yield fs_1.readdirSync(rootFolder);
-    const regex = new RegExp(`\\package.json$`);
-    for (const fileName of files) {
-        const file = path_1.join(rootFolder, fileName);
-        if (fs_1.statSync(file).isDirectory()) {
-            try {
-                result = yield exports.getAllProjects(file, recursive, result);
-            }
-            catch (error) {
-                continue;
-            }
-        }
-        else {
-            if (regex.test(file)) {
-                core_1.info(`module found : ${file}`);
-                result.push(fileName);
-            }
-        }
-    }
-    return result;
 });
 exports.getAllProjects = getAllProjects;
 
