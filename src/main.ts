@@ -11,7 +11,9 @@ async function execute(): Promise<void> {
     try {
         const recursive = await core.getBooleanInput("recursive")
         const rootFolder = await core.getInput("root-folder")
+        core.startGroup("Find modules")
         const folders: string[] = await getAllProjects(rootFolder, recursive)
+        core.endGroup()
         let body = ""
         for (const folder in folders) {
             const packageJson = path.join(folder, 'package.json')
