@@ -2,9 +2,15 @@ import { NpmOutdatedPackage } from "./npm-command-manager";
 
 
 export class PrBodyHelper {
+    rootFolder: string;
+
+    constructor(rootFolder: string) {
+        this.rootFolder = rootFolder;
+    }
+
     async buildPRBody(outdated: NpmOutdatedPackage[]): Promise<string> {
         let updatesOutOfScope: NpmOutdatedPackage[] = [];
-        let body = "### Merging this PR will update the following dependencies\n";
+        let body = `## Module: ${this.rootFolder} \n### Merging this PR will update the following dependencies\n`;
         for (let outdatedPackage of outdated) {
             if(outdatedPackage.wanted != outdatedPackage.latest) {
                 updatesOutOfScope.push(outdatedPackage);
