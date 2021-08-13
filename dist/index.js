@@ -376,7 +376,7 @@ class PrBodyHelper {
     buildPRBody(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
             let updatesOutOfScope = [];
-            let body = `# Module: ${utils_1.escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
+            let body = `# Module: ${yield utils_1.escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
             for (let outdatedPackage of outdated) {
                 if (outdatedPackage.wanted != outdatedPackage.latest) {
                     updatesOutOfScope.push(outdatedPackage);

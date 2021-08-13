@@ -11,7 +11,7 @@ export class PrBodyHelper {
 
     async buildPRBody(outdated: NpmOutdatedPackage[]): Promise<string> {
         let updatesOutOfScope: NpmOutdatedPackage[] = [];
-        let body = `# Module: ${escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
+        let body = `# Module: ${await escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
         for (let outdatedPackage of outdated) {
             if(outdatedPackage.wanted != outdatedPackage.latest) {
                 updatesOutOfScope.push(outdatedPackage);
