@@ -1,0 +1,32 @@
+{
+  "name": "npm-package-update-sync",
+  "version": "0.0.1",
+  "description": "Github action for updating and syncing npm package.json",
+  "private": true,
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc && ncc build --license license.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjololo/npm-package-update-sync.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tjololo/npm-package-update-sync/issues"
+  },
+  "homepage": "https://github.com/tjololo/npm-package-update-sync#readme",
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/exec": "^1.1.0",
+    "npm-check-updates": "^11.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.0",
+    "@vercel/ncc": "^0.29.0",
+    "typescript": "^4.3.5"
+  }
+}

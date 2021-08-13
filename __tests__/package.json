@@ -1,0 +1,32 @@
+{
+  "name": "hello-gh-action",
+  "version": "0.0.1",
+  "description": "Hello world github action",
+  "private": true,
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc && ncc build --license license.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjololo/hello-gh-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tjololo/hello-gh-action/issues"
+  },
+  "homepage": "https://github.com/tjololo/hello-gh-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/exec": "~1.0.0",
+    "npm-check-updates": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.0",
+    "@vercel/ncc": "^0.29.0",
+    "typescript": "^4.3.5"
+  }
+}
