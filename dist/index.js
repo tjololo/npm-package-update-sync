@@ -260,7 +260,7 @@ const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0,
             else {
                 if (regex.test(file)) {
                     core_1.info(`module found : ${file}`);
-                    result.push(fileName);
+                    result.push(rootFolder);
                 }
             }
         }

@@ -21,7 +21,7 @@ export const getAllProjects = async (
             } else {
                 if (regex.test(file)) {
                     info(`module found : ${file}`);
-                    result.push(fileName);
+                    result.push(rootFolder);
                 }
             }
         }
