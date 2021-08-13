@@ -1,8 +1,7 @@
 import * as core from '@actions/core'
-import { readFileSync, statSync, writeFileSync } from 'fs'
-import ncu from 'npm-check-updates'
+import { readFileSync, statSync } from 'fs'
 import * as path from 'path'
-import { NpmOutdatedPackage, NpmCommandManager } from './npm-command-manager'
+import { NpmCommandManager } from './npm-command-manager'
 import { getAllProjects } from './npm-project-locator'
 import { PackageJsonUpdater } from './packagejson-updater'
 import { PrBodyHelper } from './pr-body'
@@ -23,12 +22,11 @@ async function execute(): Promise<void> {
                 const packageJsonContent = await readFileSync(packageJson, 'utf8')
                 const packageJsonObject = JSON.parse(packageJsonContent)
                 let dependencies = Object.entries(packageJsonObject.dependencies)
-                const devDependencies = packageJsonObject.devDependencies
                 for (let [key, value] of dependencies) {
                     core.info(`Version of "${key}" is: "${value}`)
                 }
                 core.endGroup()
-                const npm = await NpmCommandManager.create(folder);
+                const npm = await NpmCommandManager.create(folder)
 
                 core.startGroup("npm install")
                 await npm.install()

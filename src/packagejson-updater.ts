@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import { readFileSync, writeFileSync } from "fs";
-import { NpmOutdatedPackage } from "./npm-command-manager";
+import { readFileSync, writeFileSync } from "fs"
+import { NpmOutdatedPackage } from "./npm-command-manager"
 
 export class PackageJsonUpdater {
     private packageJson: string
