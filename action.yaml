@@ -9,6 +9,10 @@ inputs:
     description: 'should the action look for package.json in sub-folders'
     required: true
     default: 'true'
+  comment-updated:
+    description: 'include actually updated versions in PR'
+    required: true
+    default: 'false'
 
 outputs:
   body:

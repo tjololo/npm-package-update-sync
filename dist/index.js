@@ -46,6 +46,7 @@ function execute() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const recursive = yield core.getBooleanInput("recursive");
+            const commentUpdated = yield core.getBooleanInput("comment-updated");
             const rootFolder = yield core.getInput("root-folder");
             core.startGroup("Find modules");
             const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
@@ -78,7 +79,7 @@ function execute() {
                     yield npm.update();
                     core.endGroup();
                     core.startGroup("Generate PR body");
-                    const prBodyHelper = new pr_body_1.PrBodyHelper(folder);
+                    const prBodyHelper = new pr_body_1.PrBodyHelper(folder, commentUpdated);
                     body += `${yield prBodyHelper.buildPRBody(outdatedPackages)}\n`;
                 }
             }
@@ -370,18 +371,22 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PrBodyHelper = void 0;
 const utils_1 = __nccwpck_require__(918);
 class PrBodyHelper {
-    constructor(rootFolder) {
+    constructor(rootFolder, commentUpdated) {
         this.rootFolder = rootFolder;
+        this.commentUpdated = commentUpdated;
     }
     buildPRBody(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
             let updatesOutOfScope = [];
-            let body = `# Module: ${yield utils_1.escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
+            let body = `# Module: ${yield utils_1.escapeString(this.rootFolder)} \n`;
+            if (this.commentUpdated) {
+                body += `### Merging this PR will update the following dependencies\n`;
+            }
             for (let outdatedPackage of outdated) {
                 if (outdatedPackage.wanted != outdatedPackage.latest) {
                     updatesOutOfScope.push(outdatedPackage);
                 }
-                if (outdatedPackage.current != outdatedPackage.wanted) {
+                if (outdatedPackage.current != outdatedPackage.wanted && this.commentUpdated) {
                     body += `- ${outdatedPackage.name} ${outdatedPackage.current} -> ${outdatedPackage.wanted}\n`;
                 }
             }

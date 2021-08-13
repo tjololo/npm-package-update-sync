@@ -10,6 +10,7 @@ import { PrBodyHelper } from './pr-body'
 async function execute(): Promise<void> {
     try {
         const recursive = await core.getBooleanInput("recursive")
+        const commentUpdated = await core.getBooleanInput("comment-updated")
         const rootFolder = await core.getInput("root-folder")
         core.startGroup("Find modules")
         const folders: string[] = await getAllProjects(rootFolder, recursive)
@@ -47,7 +48,7 @@ async function execute(): Promise<void> {
                 core.endGroup()
 
                 core.startGroup("Generate PR body")
-                const prBodyHelper = new PrBodyHelper(folder)
+                const prBodyHelper = new PrBodyHelper(folder, commentUpdated)
                 body += `${await prBodyHelper.buildPRBody(outdatedPackages)}\n`
             }
         }

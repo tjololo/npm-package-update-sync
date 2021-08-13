@@ -4,19 +4,24 @@ import { escapeString } from "./utils";
 
 export class PrBodyHelper {
     rootFolder: string;
+    commentUpdated: boolean;
 
-    constructor(rootFolder: string) {
+    constructor(rootFolder: string, commentUpdated: boolean) {
         this.rootFolder = rootFolder;
+        this.commentUpdated = commentUpdated;
     }
 
     async buildPRBody(outdated: NpmOutdatedPackage[]): Promise<string> {
         let updatesOutOfScope: NpmOutdatedPackage[] = [];
-        let body = `# Module: ${await escapeString(this.rootFolder)} \n### Merging this PR will update the following dependencies\n`;
+        let body = `# Module: ${await escapeString(this.rootFolder)} \n`;
+        if(this.commentUpdated) {
+            body += `### Merging this PR will update the following dependencies\n`
+        }
         for (let outdatedPackage of outdated) {
             if(outdatedPackage.wanted != outdatedPackage.latest) {
                 updatesOutOfScope.push(outdatedPackage);
             }
-            if(outdatedPackage.current != outdatedPackage.wanted) {
+            if(outdatedPackage.current != outdatedPackage.wanted && this.commentUpdated) {
                 body += `- ${outdatedPackage.name} ${outdatedPackage.current} -> ${outdatedPackage.wanted}\n`;
             }
         }
