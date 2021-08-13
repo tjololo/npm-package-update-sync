@@ -51,7 +51,7 @@ function execute() {
             const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
             core.endGroup();
             let body = "";
-            for (const folder in folders) {
+            for (const folder of folders) {
                 const packageJson = path.join(folder, 'package.json');
                 if (fs_1.statSync(packageJson).isFile()) {
                     core.startGroup("Print dependencies");

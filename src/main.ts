@@ -15,7 +15,7 @@ async function execute(): Promise<void> {
         const folders: string[] = await getAllProjects(rootFolder, recursive)
         core.endGroup()
         let body = ""
-        for (const folder in folders) {
+        for (const folder of folders) {
             const packageJson = path.join(folder, 'package.json')
             if (statSync(packageJson).isFile()) {
                 core.startGroup("Print dependencies")
