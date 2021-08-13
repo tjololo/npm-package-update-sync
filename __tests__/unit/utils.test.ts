@@ -1,4 +1,4 @@
-import * as utils from '../../src/utils';
+import * as utils from '../../src/utils'
 
 const cases = [
     ["*", "\\*"],
@@ -18,5 +18,5 @@ const cases = [
 ]
 
 test.each(cases)("given input: %s escapeString returns %s", async (input, expected) => {
-    expect(await utils.escapeString(input)).toBe(expected);
+    expect(await utils.escapeString(input)).toBe(expected)
 })

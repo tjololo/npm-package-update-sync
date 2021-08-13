@@ -1,7 +1,6 @@
+import { error } from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
-import { info, error } from '@actions/core'
-import { countReset } from 'console'
 
 
 export class NpmCommandManager {

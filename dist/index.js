@@ -59,7 +59,6 @@ function execute() {
                     const packageJsonContent = yield fs_1.readFileSync(packageJson, 'utf8');
                     const packageJsonObject = JSON.parse(packageJsonContent);
                     let dependencies = Object.entries(packageJsonObject.dependencies);
-                    const devDependencies = packageJsonObject.devDependencies;
                     for (let [key, value] of dependencies) {
                         core.info(`Version of "${key}" is: "${value}`);
                     }
@@ -129,9 +128,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NpmOutdatedPackage = exports.NpmCommandManager = void 0;
+const core_1 = __nccwpck_require__(186);
 const exec = __importStar(__nccwpck_require__(514));
 const io = __importStar(__nccwpck_require__(436));
-const core_1 = __nccwpck_require__(186);
 class NpmCommandManager {
     constructor(workingDirectory, npmPath) {
         this.workingDirectory = workingDirectory;
@@ -241,9 +240,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getAllProjects = void 0;
-const path_1 = __nccwpck_require__(622);
 const core_1 = __nccwpck_require__(186);
 const fs_1 = __nccwpck_require__(747);
+const path_1 = __nccwpck_require__(622);
 const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
         const files = yield fs_1.readdirSync(rootFolder);
