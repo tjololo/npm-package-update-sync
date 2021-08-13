@@ -1,7 +1,7 @@
 {
-  "name": "hello-gh-action",
+  "name": "test-demo",
   "version": "0.0.1",
-  "description": "Hello world github action",
+  "description": "Just for testing",
   "private": true,
   "main": "lib/main.js",
   "scripts": {
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tjololo/hello-gh-action.git"
+    "url": "git+https://github.com/tjololo/npm-package-update-sync.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tjololo/hello-gh-action/issues"
+    "url": "https://github.com/tjololo/npm-package-update-sync/issues"
   },
-  "homepage": "https://github.com/tjololo/hello-gh-action#readme",
+  "homepage": "https://github.com/tjololo/npm-package-update-sync#readme",
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/exec": "~1.0.0",

@@ -20,5 +20,4 @@ jobs:
         with:
           title: "Updated npm dependencies"
           body: ${{ steps.update.outputs.body }}
-          reviewers: tjololo
           labels: dependencies
