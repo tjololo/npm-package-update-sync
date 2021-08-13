@@ -27,7 +27,7 @@ async function execute(): Promise<void> {
                     core.info(`Version of "${key}" is: "${value}`)
                 }
                 core.endGroup()
-                const npm = await NpmCommandManager.create(rootFolder);
+                const npm = await NpmCommandManager.create(folder);
 
                 core.startGroup("npm install")
                 await npm.install()
@@ -48,7 +48,7 @@ async function execute(): Promise<void> {
 
                 core.startGroup("Generate PR body")
                 const prBodyHelper = new PrBodyHelper(folder)
-                body += await prBodyHelper.buildPRBody(outdatedPackages)
+                body += `${await prBodyHelper.buildPRBody(outdatedPackages)}\n`
             }
         }
         core.setOutput("body", body)

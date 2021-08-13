@@ -63,7 +63,7 @@ function execute() {
                         core.info(`Version of "${key}" is: "${value}`);
                     }
                     core.endGroup();
-                    const npm = yield npm_command_manager_1.NpmCommandManager.create(rootFolder);
+                    const npm = yield npm_command_manager_1.NpmCommandManager.create(folder);
                     core.startGroup("npm install");
                     yield npm.install();
                     core.endGroup();
@@ -79,7 +79,7 @@ function execute() {
                     core.endGroup();
                     core.startGroup("Generate PR body");
                     const prBodyHelper = new pr_body_1.PrBodyHelper(folder);
-                    body += yield prBodyHelper.buildPRBody(outdatedPackages);
+                    body += `${yield prBodyHelper.buildPRBody(outdatedPackages)}\n`;
                 }
             }
             core.setOutput("body", body);
