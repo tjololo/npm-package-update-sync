@@ -1,0 +1,39 @@
+{
+  "name": "test-demo",
+  "version": "0.0.1",
+  "description": "Just for testing",
+  "private": true,
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc && ncc build --license license.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjololo/npm-package-update-sync.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tjololo/npm-package-update-sync/issues"
+  },
+  "homepage": "https://github.com/tjololo/npm-package-update-sync#readme",
+  "dependencies": {
+    "tilde-one-zero-zero": "~1.0.0",
+    "tilde-one-zero": "~1.0",
+    "tilde-one-zero-x": "~1.0.x",
+    "upper-one-zero-zero": "^1.0.0",
+    "upper-one-zero-x": "^1.0.x",
+    "upper-one-zero": "^1.0",
+    "upper-one-x-x": "^1.x.x",
+    "upper-one-x": "^1.x",
+    "upper-one": "^1",
+    "star": "*",
+    "one-zero": "1.0",
+    "one-zero-x": "1.0.x",
+    "one-x": "1.x",
+    "x": "x",
+    "fixed": "1.0.0"
+  }
+}
