@@ -14,7 +14,7 @@ jobs:
         id: update
         uses: tjololo/npm-package-update-sync@main
         with:
-          root-folder: __tests__
+          recursive: false
           comment-updated: true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
