@@ -39,42 +39,48 @@ const core = __importStar(__nccwpck_require__(186));
 const fs_1 = __nccwpck_require__(747);
 const path = __importStar(__nccwpck_require__(622));
 const npm_command_manager_1 = __nccwpck_require__(557);
+const npm_project_locator_1 = __nccwpck_require__(119);
 const packagejson_updater_1 = __nccwpck_require__(82);
 const pr_body_1 = __nccwpck_require__(98);
 function execute() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const recursive = yield core.getBooleanInput("recursive");
             const rootFolder = yield core.getInput("root-folder");
-            const packageJson = path.join(rootFolder, 'package.json');
-            if (fs_1.statSync(packageJson).isFile()) {
-                core.startGroup("Print dependencies");
-                const packageJsonContent = yield fs_1.readFileSync(packageJson, 'utf8');
-                const packageJsonObject = JSON.parse(packageJsonContent);
-                let dependencies = Object.entries(packageJsonObject.dependencies);
-                const devDependencies = packageJsonObject.devDependencies;
-                for (let [key, value] of dependencies) {
-                    core.info(`Version of "${key}" is: "${value}`);
+            const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
+            let body = "";
+            for (const folder in folders) {
+                const packageJson = path.join(folder, 'package.json');
+                if (fs_1.statSync(packageJson).isFile()) {
+                    core.startGroup("Print dependencies");
+                    const packageJsonContent = yield fs_1.readFileSync(packageJson, 'utf8');
+                    const packageJsonObject = JSON.parse(packageJsonContent);
+                    let dependencies = Object.entries(packageJsonObject.dependencies);
+                    const devDependencies = packageJsonObject.devDependencies;
+                    for (let [key, value] of dependencies) {
+                        core.info(`Version of "${key}" is: "${value}`);
+                    }
+                    core.endGroup();
+                    const npm = yield npm_command_manager_1.NpmCommandManager.create(rootFolder);
+                    core.startGroup("npm install");
+                    yield npm.install();
+                    core.endGroup();
+                    core.startGroup("npm outdated");
+                    const outdatedPackages = yield npm.outdated();
+                    core.endGroup();
+                    core.startGroup("Update package.json");
+                    const updater = new packagejson_updater_1.PackageJsonUpdater(packageJson);
+                    yield updater.updatePackageJson(outdatedPackages);
+                    core.endGroup();
+                    core.startGroup("npm update");
+                    yield npm.update();
+                    core.endGroup();
+                    core.startGroup("Generate PR body");
+                    const prBodyHelper = new pr_body_1.PrBodyHelper(folder);
+                    body += yield prBodyHelper.buildPRBody(outdatedPackages);
                 }
-                core.endGroup();
-                const npm = yield npm_command_manager_1.NpmCommandManager.create(rootFolder);
-                core.startGroup("npm install");
-                yield npm.install();
-                core.endGroup();
-                core.startGroup("npm outdated");
-                const outdatedPackages = yield npm.outdated();
-                core.endGroup();
-                core.startGroup("Update package.json");
-                const updater = new packagejson_updater_1.PackageJsonUpdater(packageJson);
-                yield updater.updatePackageJson(outdatedPackages);
-                core.endGroup();
-                core.startGroup("npm update");
-                yield npm.update();
-                core.endGroup();
-                core.startGroup("Generate PR body");
-                const prBodyHelper = new pr_body_1.PrBodyHelper();
-                const prBody = yield prBodyHelper.buildPRBody(outdatedPackages);
-                core.setOutput("body", prBody);
             }
+            core.setOutput("body", body);
         }
         catch (e) {
             core.setFailed(e.message);
@@ -217,6 +223,56 @@ class NpmOutput {
 
 /***/ }),
 
+/***/ 119:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getAllProjects = void 0;
+const path_1 = __nccwpck_require__(622);
+const core_1 = __nccwpck_require__(186);
+const fs_1 = __nccwpck_require__(747);
+const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
+    if (recursive) {
+    }
+    else {
+        return [rootFolder];
+    }
+    const files = yield fs_1.readdirSync(rootFolder);
+    const regex = new RegExp(`\\package.json$`);
+    for (const fileName of files) {
+        const file = path_1.join(rootFolder, fileName);
+        if (fs_1.statSync(file).isDirectory()) {
+            try {
+                result = yield exports.getAllProjects(file, recursive, result);
+            }
+            catch (error) {
+                continue;
+            }
+        }
+        else {
+            if (regex.test(file)) {
+                core_1.info(`module found : ${file}`);
+                result.push(fileName);
+            }
+        }
+    }
+    return result;
+});
+exports.getAllProjects = getAllProjects;
+
+
+/***/ }),
+
 /***/ 82:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -311,10 +367,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PrBodyHelper = void 0;
 class PrBodyHelper {
+    constructor(rootFolder) {
+        this.rootFolder = rootFolder;
+    }
     buildPRBody(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
             let updatesOutOfScope = [];
-            let body = "### Merging this PR will update the following dependencies\n";
+            let body = `## Module: ${this.rootFolder} \n### Merging this PR will update the following dependencies\n`;
             for (let outdatedPackage of outdated) {
                 if (outdatedPackage.wanted != outdatedPackage.latest) {
                     updatesOutOfScope.push(outdatedPackage);

@@ -12,6 +12,7 @@ async function execute(): Promise<void> {
         const recursive = await core.getBooleanInput("recursive")
         const rootFolder = await core.getInput("root-folder")
         const folders: string[] = await getAllProjects(rootFolder, recursive)
+        let body = ""
         for (const folder in folders) {
             const packageJson = path.join(folder, 'package.json')
             if (statSync(packageJson).isFile()) {
@@ -45,10 +46,10 @@ async function execute(): Promise<void> {
 
                 core.startGroup("Generate PR body")
                 const prBodyHelper = new PrBodyHelper(folder)
-                const prBody = await prBodyHelper.buildPRBody(outdatedPackages)
-                core.setOutput("body", prBody)
+                body += await prBodyHelper.buildPRBody(outdatedPackages)
             }
         }
+        core.setOutput("body", body)
     } catch (e) {
         core.setFailed(e.message)
     }
