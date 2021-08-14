@@ -7,7 +7,7 @@ export class NpmCommandManager {
     private workingDirectory: string
     private npmPath: string
 
-    private constructor(workingDirectory: string, npmPath: string) {
+    constructor(workingDirectory: string, npmPath: string) {
         this.workingDirectory = workingDirectory
         this.npmPath = npmPath
     }
@@ -21,13 +21,17 @@ export class NpmCommandManager {
         const result = await this.exec(['install'])
         if (result.exitCode !== 0) {
             error(`npm install returned non-zero exitcode: ${result.exitCode}`)
+            throw new Error(`npm install returned non-zero exitcode: ${result.exitCode}`)
         }
     }
 
     async outdated(): Promise<NpmOutdatedPackage[]> {
         const result = await this.exec(['outdated', '--json'])
-        if (result.exitCode >= 2 || result.stdout.length === 0) {
+        if (result.exitCode === 0) {
             return []
+        }
+        if (result.exitCode > 1) {
+            throw new Error(`npm outdated returned unknown exitcode: ${result.exitCode}`)
         }
         const packages: NpmOutdatedPackage[] = []
         const resultJson = JSON.parse(result.stdout)
@@ -47,6 +51,7 @@ export class NpmCommandManager {
         const result = await this.exec(['install', '--package-lock-only'])
         if (result.exitCode !== 0) {
             error(`npm update returned non-zero exitcode: ${result.exitCode}`)
+            throw new Error(`npm install --package-lock-only returned non-zero exitcode: ${result.exitCode}`)
         }
     }
 
@@ -89,7 +94,7 @@ export class NpmOutdatedPackage {
     }
 }
 
-class NpmOutput {
+export class NpmOutput {
     stdout = ''
     stderr = ''
     exitCode = 0
