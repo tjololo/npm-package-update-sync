@@ -5,7 +5,7 @@ This action will update dependencies to latest available version accoring to ver
 
 If the version range is described with ```^``` or ```~``` prefix and complete semver string it will update package.json to reflect actual version.
 
-Given that version 1.3.0 of _@actions/core_ is the latest version on major version 1 and the following dependencies in package.json
+Given that version 1.4.0 of _@actions/core_ is the latest version on major version 1 and the following dependencies in package.json
 
 ```json
 //.....
