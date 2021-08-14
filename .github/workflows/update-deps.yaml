@@ -24,11 +24,13 @@ jobs:
           recursive: false
           comment-updated: true
       - name: Get week number
+        id: week
         run: |
-          echo "$(date +%U)"
+          echo "::set-output name=NUMBER::$(date +%U)"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          title: "Updated npm dependencies"
+          title: "Updated npm dependencies w${{ steps.week.outputs.NUMBER }}"
+          branch: "deps/npm-updates-w${{ steps.week.outputs.NUMBER }}"
           body: ${{ steps.update.outputs.body }}
           labels: dependencies
