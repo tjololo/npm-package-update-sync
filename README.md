@@ -1,4 +1,11 @@
 # NPM update and synchronize
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tjololo/npm-package-update-sync.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tjololo/npm-package-update-sync/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/tjololo/npm-package-update-sync.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tjololo/npm-package-update-sync/context:javascript)
+[![CodeQL](https://github.com/tjololo/npm-package-update-sync/workflows/CodeQL/badge.svg)](https://github.com/tjololo/npm-package-update-sync/actions?query=workflow%3ACodeQL "Code quality workflow status")
+
+[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/)
+![GitHub](https://img.shields.io/github/license/tjololo/npm-package-update-sync?style=plastic)
+
 Github action that checks for updates and synchronises package.json
 
 This action will update dependencies to latest available version accoring to version range in package.json
