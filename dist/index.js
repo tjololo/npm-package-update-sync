@@ -127,7 +127,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NpmOutdatedPackage = exports.NpmCommandManager = void 0;
+exports.NpmOutput = exports.NpmOutdatedPackage = exports.NpmCommandManager = void 0;
 const core_1 = __nccwpck_require__(186);
 const exec = __importStar(__nccwpck_require__(514));
 const io = __importStar(__nccwpck_require__(436));
@@ -147,14 +147,18 @@ class NpmCommandManager {
             const result = yield this.exec(['install']);
             if (result.exitCode !== 0) {
                 core_1.error(`npm install returned non-zero exitcode: ${result.exitCode}`);
+                throw new Error(`npm install returned non-zero exitcode: ${result.exitCode}`);
             }
         });
     }
     outdated() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.exec(['outdated', '--json']);
-            if (result.exitCode >= 2 || result.stdout.length === 0) {
+            if (result.exitCode === 0) {
                 return [];
+            }
+            if (result.exitCode > 1) {
+                throw new Error(`npm outdated returned unknown exitcode: ${result.exitCode}`);
             }
             const packages = [];
             const resultJson = JSON.parse(result.stdout);
@@ -175,6 +179,7 @@ class NpmCommandManager {
             const result = yield this.exec(['install', '--package-lock-only']);
             if (result.exitCode !== 0) {
                 core_1.error(`npm update returned non-zero exitcode: ${result.exitCode}`);
+                throw new Error(`npm install --package-lock-only returned non-zero exitcode: ${result.exitCode}`);
             }
         });
     }
@@ -221,6 +226,7 @@ class NpmOutput {
         this.exitCode = exitCode;
     }
 }
+exports.NpmOutput = NpmOutput;
 
 
 /***/ }),
