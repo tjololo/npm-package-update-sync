@@ -45,9 +45,9 @@ const pr_body_1 = __nccwpck_require__(98);
 function execute() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const recursive = yield core.getBooleanInput("recursive");
-            const commentUpdated = yield core.getBooleanInput("comment-updated");
-            const rootFolder = yield core.getInput("root-folder");
+            const recursive = core.getBooleanInput("recursive");
+            const commentUpdated = core.getBooleanInput("comment-updated");
+            const rootFolder = core.getInput("root-folder");
             core.startGroup("Find modules");
             const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
             core.endGroup();
@@ -56,7 +56,7 @@ function execute() {
                 const packageJson = path.join(folder, 'package.json');
                 if (fs_1.statSync(packageJson).isFile()) {
                     core.startGroup("Print dependencies");
-                    const packageJsonContent = yield fs_1.readFileSync(packageJson, 'utf8');
+                    const packageJsonContent = fs_1.readFileSync(packageJson, 'utf8');
                     const packageJsonObject = JSON.parse(packageJsonContent);
                     let dependencies = Object.entries(packageJsonObject.dependencies);
                     for (let [key, value] of dependencies) {
@@ -251,8 +251,8 @@ const fs_1 = __nccwpck_require__(747);
 const path_1 = __nccwpck_require__(622);
 const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
-        const files = yield fs_1.readdirSync(rootFolder);
-        const regex = new RegExp(`\\package.json$`);
+        const files = fs_1.readdirSync(rootFolder);
+        const regex = /package.json$/;
         for (const fileName of files) {
             const file = path_1.join(rootFolder, fileName);
             if (fs_1.statSync(file).isDirectory()) {
@@ -323,7 +323,7 @@ class PackageJsonUpdater {
     }
     updatePackageJson(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
-            const packageJsonContent = yield fs_1.readFileSync(this.packageJson, 'utf8');
+            const packageJsonContent = fs_1.readFileSync(this.packageJson, 'utf8');
             const packageJsonObject = JSON.parse(packageJsonContent);
             for (const outdatedPackage of outdated) {
                 core.info(`${outdatedPackage.name} is ${outdatedPackage.current} wanting ${outdatedPackage.wanted}`);
@@ -346,11 +346,11 @@ class PackageJsonUpdater {
                     }
                 }
             }
-            yield fs_1.writeFileSync(this.packageJson, JSON.stringify(packageJsonObject, null, 2));
+            fs_1.writeFileSync(this.packageJson, JSON.stringify(packageJsonObject, null, 2));
         });
     }
     shouldUpdatePackageJson(version) {
-        const regex = new RegExp(`^(~|\\^)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$`);
+        const regex = /^(~|\^)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
         return regex.test(version);
     }
 }
