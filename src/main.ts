@@ -8,9 +8,9 @@ import { PrBodyHelper } from './pr-body'
 
 async function execute(): Promise<void> {
     try {
-        const recursive = await core.getBooleanInput("recursive")
-        const commentUpdated = await core.getBooleanInput("comment-updated")
-        const rootFolder = await core.getInput("root-folder")
+        const recursive = core.getBooleanInput("recursive")
+        const commentUpdated = core.getBooleanInput("comment-updated")
+        const rootFolder = core.getInput("root-folder")
         core.startGroup("Find modules")
         const folders: string[] = await getAllProjects(rootFolder, recursive)
         core.endGroup()
@@ -19,7 +19,7 @@ async function execute(): Promise<void> {
             const packageJson = path.join(folder, 'package.json')
             if (statSync(packageJson).isFile()) {
                 core.startGroup("Print dependencies")
-                const packageJsonContent = await readFileSync(packageJson, 'utf8')
+                const packageJsonContent = readFileSync(packageJson, 'utf8')
                 const packageJsonObject = JSON.parse(packageJsonContent)
                 let dependencies = Object.entries(packageJsonObject.dependencies)
                 for (let [key, value] of dependencies) {

@@ -10,7 +10,7 @@ export class PackageJsonUpdater {
     }
 
     async updatePackageJson(outdated: NpmOutdatedPackage[]): Promise<void> {
-        const packageJsonContent = await readFileSync(this.packageJson, 'utf8')
+        const packageJsonContent = readFileSync(this.packageJson, 'utf8')
         const packageJsonObject = JSON.parse(packageJsonContent)
         for (const outdatedPackage of outdated) {
             core.info(`${outdatedPackage.name} is ${outdatedPackage.current} wanting ${outdatedPackage.wanted}`)
@@ -30,11 +30,11 @@ export class PackageJsonUpdater {
                 }
             }
         }
-        await writeFileSync(this.packageJson, JSON.stringify(packageJsonObject, null, 2))
+        writeFileSync(this.packageJson, JSON.stringify(packageJsonObject, null, 2))
     }
 
     private shouldUpdatePackageJson(version: string): boolean {
-        const regex = new RegExp(`^(~|\\^)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$`)
+        const regex = /^(~|\^)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
         return regex.test(version)
     }
 }

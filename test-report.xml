@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/Users/vga/development/github/tjololo/npm-package-update-sync/__tests__/unit/utils.test.ts">
+    <testCase name="given input: * escapeString returns \*" duration="24"/>
+    <testCase name="given input: # escapeString returns \#" duration="1"/>
+    <testCase name="given input: ( escapeString returns \(" duration="1"/>
+    <testCase name="given input: ) escapeString returns \)" duration="0"/>
+    <testCase name="given input: [ escapeString returns \[" duration="0"/>
+    <testCase name="given input: ] escapeString returns \]" duration="1"/>
+    <testCase name="given input: _ escapeString returns \_" duration="1"/>
+    <testCase name="given input: \ escapeString returns \\" duration="0"/>
+    <testCase name="given input: + escapeString returns \+" duration="1"/>
+    <testCase name="given input: - escapeString returns \-" duration="0"/>
+    <testCase name="given input: ` escapeString returns \`" duration="0"/>
+    <testCase name="given input: &lt; escapeString returns &amp;lt;" duration="1"/>
+    <testCase name="given input: &gt; escapeString returns &amp;gt;" duration="0"/>
+  </file>
+  <file path="/Users/vga/development/github/tjololo/npm-package-update-sync/__tests__/unit/npm-project-locator.test.ts">
+    <testCase name="locate projects recursivly" duration="9"/>
+    <testCase name="locate projects not recursivly" duration="0"/>
+  </file>
+  <file path="/Users/vga/development/github/tjololo/npm-package-update-sync/__tests__/unit/npm-command-manager.test.ts">
+    <testCase name="install does not throw error if exit code is 0" duration="22"/>
+    <testCase name="install throws error if exit code is 1" duration="25"/>
+    <testCase name="outdated returns list of outdated packages" duration="6"/>
+    <testCase name="outdated returns empty list if no updates" duration="2"/>
+    <testCase name="outdated throws error if exitcode is &gt; 1" duration="4"/>
+    <testCase name="update does not throw error if exitCode 0" duration="3"/>
+    <testCase name="update does throw error if exitCode 1" duration="2"/>
+  </file>
+  <file path="/Users/vga/development/github/tjololo/npm-package-update-sync/__tests__/unit/packagejson-updater.test.ts">
+    <testCase name="updates dependencies package.json" duration="8"/>
+    <testCase name="updates devDependencies package.json" duration="4"/>
+  </file>
+</testExecutions>

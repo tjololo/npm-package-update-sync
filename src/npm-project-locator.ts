@@ -8,8 +8,8 @@ export const getAllProjects = async (
     result: string[] = []
 ): Promise<string[]> => {
     if (recursive) {
-        const files: string[] = await readdirSync(rootFolder)
-        const regex = new RegExp(`\\package.json$`)
+        const files: string[] = readdirSync(rootFolder)
+        const regex = /package.json$/
         for (const fileName of files) {
             const file = join(rootFolder, fileName)
             if (statSync(file).isDirectory()) {
