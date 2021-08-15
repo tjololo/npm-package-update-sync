@@ -7,7 +7,6 @@ on:
 
 jobs:
   run-unit-test:
-    environment: test
     runs-on: ubuntu-latest
     name: Run unit tests
     strategy:
