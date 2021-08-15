@@ -2,4 +2,12 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  collectCoverage: true,
+  testResultsProcessor: "jest-sonar-reporter",
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/__test__/",
+    "/dist/",
+    "/lib/"
+  ]
 };
