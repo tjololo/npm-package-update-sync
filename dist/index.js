@@ -350,7 +350,7 @@ class PackageJsonUpdater {
         });
     }
     shouldUpdatePackageJson(version) {
-        const regex = /^(~|\^)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+        const regex = /^[~\^](0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
         return regex.test(version);
     }
 }
