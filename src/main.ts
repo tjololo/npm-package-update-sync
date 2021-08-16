@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { readFileSync, statSync } from 'fs'
+import { statSync } from 'fs'
 import * as path from 'path'
 import { NpmCommandManager } from './npm-command-manager'
 import { getAllProjects } from './npm-project-locator'
