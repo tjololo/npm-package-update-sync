@@ -18,34 +18,26 @@ async function execute(): Promise<void> {
         for (const folder of folders) {
             const packageJson = path.join(folder, 'package.json')
             if (statSync(packageJson).isFile()) {
-                core.startGroup("Print dependencies")
-                const packageJsonContent = readFileSync(packageJson, 'utf8')
-                const packageJsonObject = JSON.parse(packageJsonContent)
-                let dependencies = Object.entries(packageJsonObject.dependencies)
-                for (let [key, value] of dependencies) {
-                    core.info(`Version of "${key}" is: "${value}`)
-                }
-                core.endGroup()
                 const npm = await NpmCommandManager.create(folder)
 
-                core.startGroup("npm install")
+                core.startGroup(`npm install ${packageJson}`)
                 await npm.install()
                 core.endGroup()
 
-                core.startGroup("npm outdated")
+                core.startGroup(`npm outdated ${packageJson}`)
                 const outdatedPackages = await npm.outdated()
                 core.endGroup()
 
-                core.startGroup("Update package.json")
+                core.startGroup(`npm install --package-lock-only ${packageJson}`)
                 const updater = new PackageJsonUpdater(packageJson)
                 await updater.updatePackageJson(outdatedPackages)
                 core.endGroup()
 
-                core.startGroup("npm update")
+                core.startGroup(`npm update ${packageJson}`)
                 await npm.update()
                 core.endGroup()
 
-                core.startGroup("Generate PR body")
+                core.startGroup(`append to PR body  ${packageJson}`)
                 const prBodyHelper = new PrBodyHelper(folder, commentUpdated)
                 body += `${await prBodyHelper.buildPRBody(outdatedPackages)}\n`
             }

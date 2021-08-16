@@ -55,29 +55,21 @@ function execute() {
             for (const folder of folders) {
                 const packageJson = path.join(folder, 'package.json');
                 if (fs_1.statSync(packageJson).isFile()) {
-                    core.startGroup("Print dependencies");
-                    const packageJsonContent = fs_1.readFileSync(packageJson, 'utf8');
-                    const packageJsonObject = JSON.parse(packageJsonContent);
-                    let dependencies = Object.entries(packageJsonObject.dependencies);
-                    for (let [key, value] of dependencies) {
-                        core.info(`Version of "${key}" is: "${value}`);
-                    }
-                    core.endGroup();
                     const npm = yield npm_command_manager_1.NpmCommandManager.create(folder);
-                    core.startGroup("npm install");
+                    core.startGroup(`npm install ${packageJson}`);
                     yield npm.install();
                     core.endGroup();
-                    core.startGroup("npm outdated");
+                    core.startGroup(`npm outdated ${packageJson}`);
                     const outdatedPackages = yield npm.outdated();
                     core.endGroup();
-                    core.startGroup("Update package.json");
+                    core.startGroup(`npm install --package-lock-only ${packageJson}`);
                     const updater = new packagejson_updater_1.PackageJsonUpdater(packageJson);
                     yield updater.updatePackageJson(outdatedPackages);
                     core.endGroup();
-                    core.startGroup("npm update");
+                    core.startGroup(`npm update ${packageJson}`);
                     yield npm.update();
                     core.endGroup();
-                    core.startGroup("Generate PR body");
+                    core.startGroup(`append to PR body  ${packageJson}`);
                     const prBodyHelper = new pr_body_1.PrBodyHelper(folder, commentUpdated);
                     body += `${yield prBodyHelper.buildPRBody(outdatedPackages)}\n`;
                 }
