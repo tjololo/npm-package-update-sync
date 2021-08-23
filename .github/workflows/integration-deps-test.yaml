@@ -1,11 +1,11 @@
 name: Integration tests
 
 on:
-  pull_request:
-    branches: [main]
   push:
     branches:
       - "main"
+      - "feature/*"
+      - "bugfix/*"
 
 jobs:
   npm_update_sync_node_14:
