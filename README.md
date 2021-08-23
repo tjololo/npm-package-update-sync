@@ -58,6 +58,10 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2   # Setup build agent with wanted version of node see: https://github.com/actions/setup-node
+        with:
+          node-version: '16'          
+
       - name: Update package.json
         id: update
         uses: tjololo/npm-package-update-sync@v1
