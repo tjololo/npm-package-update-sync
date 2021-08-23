@@ -19,14 +19,14 @@ export class PackageJsonUpdater {
                 if (this.shouldUpdatePackageJson(orig)) {
                     packageJsonObject.dependencies[outdatedPackage.name] = `${orig[0]}${outdatedPackage.wanted}`
                 } else {
-                    core.info(`Skippoing update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`)
+                    core.info(`Skipping update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`)
                 }
             } else if (packageJsonObject.devDependencies && packageJsonObject.devDependencies[outdatedPackage.name]) {
                 const orig = packageJsonObject.devDependencies[outdatedPackage.name]
                 if (this.shouldUpdatePackageJson(orig)) {
                     packageJsonObject.devDependencies[outdatedPackage.name] = `${orig[0]}${outdatedPackage.wanted}`
                 } else {
-                    core.info(`Skippoing update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`)
+                    core.info(`Skipping update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`)
                 }
             }
         }

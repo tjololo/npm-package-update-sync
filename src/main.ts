@@ -28,12 +28,12 @@ async function execute(): Promise<void> {
                 const outdatedPackages = await npm.outdated()
                 core.endGroup()
 
-                core.startGroup(`npm install --package-lock-only ${packageJson}`)
+                core.startGroup(`update package references in ${packageJson}`)
                 const updater = new PackageJsonUpdater(packageJson)
                 await updater.updatePackageJson(outdatedPackages)
                 core.endGroup()
 
-                core.startGroup(`npm update ${packageJson}`)
+                core.startGroup(`npm install --package-lock-only ${packageJson}`)
                 await npm.update()
                 core.endGroup()
 
