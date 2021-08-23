@@ -17,9 +17,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Update package.json
         id: update
-        uses: tjololo/npm-package-update-sync@main
+        uses: tjololo/npm-package-update-sync@feature/support-npm-7
         with:
           recursive: false
           comment-updated: true
@@ -42,7 +46,7 @@ jobs:
           node-version: '16'
       - name: Update package.json
         id: update
-        uses: tjololo/npm-package-update-sync@main
+        uses: tjololo/npm-package-update-sync@feature/support-npm-7
         with:
           recursive: false
           comment-updated: true
