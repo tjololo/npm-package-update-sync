@@ -27,9 +27,6 @@ export class NpmCommandManager {
 
     async outdated(): Promise<NpmOutdatedPackage[]> {
         const result = await this.exec(['outdated', '--json'])
-        if (result.exitCode === 0) {
-            return []
-        }
         if (result.exitCode > 1) {
             throw new Error(`npm outdated returned unknown exitcode: ${result.exitCode}`)
         }
