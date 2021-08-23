@@ -62,11 +62,12 @@ function execute() {
                     core.startGroup(`npm outdated ${packageJson}`);
                     const outdatedPackages = yield npm.outdated();
                     core.endGroup();
-                    core.startGroup(`npm install --package-lock-only ${packageJson}`);
+                    core.startGroup(`update package references in ${packageJson}`);
                     const updater = new packagejson_updater_1.PackageJsonUpdater(packageJson);
+                    core.info(`Updating ${outdatedPackages}`);
                     yield updater.updatePackageJson(outdatedPackages);
                     core.endGroup();
-                    core.startGroup(`npm update ${packageJson}`);
+                    core.startGroup(`npm install --package-lock-only ${packageJson}`);
                     yield npm.update();
                     core.endGroup();
                     core.startGroup(`append to PR body  ${packageJson}`);
@@ -146,9 +147,6 @@ class NpmCommandManager {
     outdated() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.exec(['outdated', '--json']);
-            if (result.exitCode === 0) {
-                return [];
-            }
             if (result.exitCode > 1) {
                 throw new Error(`npm outdated returned unknown exitcode: ${result.exitCode}`);
             }
@@ -325,7 +323,7 @@ class PackageJsonUpdater {
                         packageJsonObject.dependencies[outdatedPackage.name] = `${orig[0]}${outdatedPackage.wanted}`;
                     }
                     else {
-                        core.info(`Skippoing update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`);
+                        core.info(`Skipping update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`);
                     }
                 }
                 else if (packageJsonObject.devDependencies && packageJsonObject.devDependencies[outdatedPackage.name]) {
@@ -334,7 +332,7 @@ class PackageJsonUpdater {
                         packageJsonObject.devDependencies[outdatedPackage.name] = `${orig[0]}${outdatedPackage.wanted}`;
                     }
                     else {
-                        core.info(`Skippoing update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`);
+                        core.info(`Skipping update of version for ${outdatedPackage.name} as update of version string ${orig} has no affect`);
                     }
                 }
             }

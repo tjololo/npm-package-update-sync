@@ -30,6 +30,7 @@ async function execute(): Promise<void> {
 
                 core.startGroup(`update package references in ${packageJson}`)
                 const updater = new PackageJsonUpdater(packageJson)
+                core.info(`Updating ${outdatedPackages}`)
                 await updater.updatePackageJson(outdatedPackages)
                 core.endGroup()
 
