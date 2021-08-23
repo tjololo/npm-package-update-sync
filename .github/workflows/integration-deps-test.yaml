@@ -23,7 +23,7 @@ jobs:
         with:
           recursive: false
           comment-updated: true
-          root-folder: __tests__/unit/fixtures/it/package-lock-v1
+          root-folder: __tests__/it/package-lock-v1
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -46,7 +46,7 @@ jobs:
         with:
           recursive: false
           comment-updated: true
-          root-folder: __tests__/unit/fixtures/it/package-lock-v2
+          root-folder: __tests__/it/package-lock-v2
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
