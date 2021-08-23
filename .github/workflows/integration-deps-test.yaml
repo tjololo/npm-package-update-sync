@@ -6,6 +6,8 @@ on:
       - "main"
 
 jobs:
+
+  # Example of a job for a project using nodejs 14 and npm 6
   npm_update_sync_node_14:
     runs-on: ubuntu-latest
     name: Update npm packages and sync package.json with nodejs 14 npm 6
@@ -33,6 +35,8 @@ jobs:
           branch: "tests/npm-updates-integration-v1"
           body: ${{ steps.update.outputs.body }}
           labels: dependencies
+
+ # Example of a job for a project using nodejs 16 and npm 7
   npm_update_sync_ndoe_16:
     runs-on: ubuntu-latest
     name: Update npm packages and sync package.json with nodejs 16 npm 7
