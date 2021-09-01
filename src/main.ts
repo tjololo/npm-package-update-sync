@@ -5,6 +5,7 @@ import { NpmCommandManager } from './npm-command-manager'
 import { getAllProjects } from './npm-project-locator'
 import { PackageJsonUpdater } from './packagejson-updater'
 import { PrBodyHelper } from './pr-body'
+import { filterPackagesWithUpdates } from './utils'
 
 async function execute(): Promise<void> {
     try {
@@ -15,6 +16,7 @@ async function execute(): Promise<void> {
         const folders: string[] = await getAllProjects(rootFolder, recursive)
         core.endGroup()
         let body = ""
+        let hasUpdates = false
         for (const folder of folders) {
             const packageJson = path.join(folder, 'package.json')
             if (statSync(packageJson).isFile()) {
@@ -38,12 +40,19 @@ async function execute(): Promise<void> {
                 await npm.update()
                 core.endGroup()
 
+                core.startGroup(`update output flag value`)
+                if (!hasUpdates) {
+                    hasUpdates = (await filterPackagesWithUpdates(outdatedPackages)).length > 0
+                }
+                core.endGroup
+
                 core.startGroup(`append to PR body  ${packageJson}`)
                 const prBodyHelper = new PrBodyHelper(folder, commentUpdated)
                 body += `${await prBodyHelper.buildPRBody(outdatedPackages)}\n`
             }
         }
         core.setOutput("body", body)
+        core.setOutput("updated", hasUpdates)
     } catch (e) {
         if (e instanceof Error) {
             core.setFailed(e.message)

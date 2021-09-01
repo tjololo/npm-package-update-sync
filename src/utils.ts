@@ -1,3 +1,4 @@
+import { NpmOutdatedPackage } from "./npm-command-manager"
 
 const map = {
     '*': '\\*',
@@ -20,4 +21,10 @@ export const escapeString = async (
     string
 ): Promise<string> => {
     return string.replace(/[\*\(\)\[\]\+\-\\_`#<>]/g, m => map[m])
+}
+
+export const filterPackagesWithUpdates = async (
+    packages: NpmOutdatedPackage[]
+): Promise<NpmOutdatedPackage[]> => {
+    return packages.filter(p => p.wanted !== p.current)
 }

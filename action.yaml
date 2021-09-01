@@ -20,6 +20,8 @@ inputs:
 outputs:
   body:
     description: 'Body reprecenting updates made'
+  updated:
+    description: 'Returns true if any dependencies are updated'
 runs:
   using: 'node12'
   main: 'dist/index.js'
