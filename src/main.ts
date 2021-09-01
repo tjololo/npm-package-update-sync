@@ -44,7 +44,7 @@ async function execute(): Promise<void> {
                 if (!hasUpdates) {
                     hasUpdates = (await filterPackagesWithUpdates(outdatedPackages)).length > 0
                 }
-                core.endGroup
+                core.endGroup()
 
                 core.startGroup(`append to PR body  ${packageJson}`)
                 const prBodyHelper = new PrBodyHelper(folder, commentUpdated)

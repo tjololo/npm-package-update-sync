@@ -76,7 +76,7 @@ function execute() {
                     if (!hasUpdates) {
                         hasUpdates = (yield (0, utils_1.filterPackagesWithUpdates)(outdatedPackages)).length > 0;
                     }
-                    core.endGroup;
+                    core.endGroup();
                     core.startGroup(`append to PR body  ${packageJson}`);
                     const prBodyHelper = new pr_body_1.PrBodyHelper(folder, commentUpdated);
                     body += `${yield prBodyHelper.buildPRBody(outdatedPackages)}\n`;
