@@ -1,7 +1,6 @@
 import { info } from "@actions/core"
 import { readdirSync, statSync } from "fs"
 import { join } from "path"
-import { stringify } from "querystring"
 
 export const getAllProjects = async (
     rootFolder: string,
