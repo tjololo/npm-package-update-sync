@@ -82,6 +82,7 @@ jobs:
 
 ### Action outputs
 * `body` - Markdown formated text that can be used in a commit or PR
+* `updated` - Returns true if any dependencies are updated
 
 Example of a body for a project with two package.json with `comment-updated` set to `true`:
 

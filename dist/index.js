@@ -42,6 +42,7 @@ const npm_command_manager_1 = __nccwpck_require__(557);
 const npm_project_locator_1 = __nccwpck_require__(119);
 const packagejson_updater_1 = __nccwpck_require__(82);
 const pr_body_1 = __nccwpck_require__(98);
+const utils_1 = __nccwpck_require__(918);
 function execute() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -52,6 +53,7 @@ function execute() {
             const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive);
             core.endGroup();
             let body = "";
+            let hasUpdates = false;
             for (const folder of folders) {
                 const packageJson = path.join(folder, 'package.json');
                 if ((0, fs_1.statSync)(packageJson).isFile()) {
@@ -70,12 +72,18 @@ function execute() {
                     core.startGroup(`npm install --package-lock-only ${packageJson}`);
                     yield npm.update();
                     core.endGroup();
+                    core.startGroup(`update output flag value`);
+                    if (!hasUpdates) {
+                        hasUpdates = (yield (0, utils_1.filterPackagesWithUpdates)(outdatedPackages)).length > 0;
+                    }
+                    core.endGroup();
                     core.startGroup(`append to PR body  ${packageJson}`);
                     const prBodyHelper = new pr_body_1.PrBodyHelper(folder, commentUpdated);
                     body += `${yield prBodyHelper.buildPRBody(outdatedPackages)}\n`;
                 }
             }
             core.setOutput("body", body);
+            core.setOutput("updated", hasUpdates);
         }
         catch (e) {
             if (e instanceof Error) {
@@ -426,7 +434,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.escapeString = void 0;
+exports.filterPackagesWithUpdates = exports.escapeString = void 0;
 const map = {
     '*': '\\*',
     '#': '\\#',
@@ -447,6 +455,10 @@ const escapeString = (string) => __awaiter(void 0, void 0, void 0, function* () 
     return string.replace(/[\*\(\)\[\]\+\-\\_`#<>]/g, m => map[m]);
 });
 exports.escapeString = escapeString;
+const filterPackagesWithUpdates = (packages) => __awaiter(void 0, void 0, void 0, function* () {
+    return packages.filter(p => p.wanted !== p.current);
+});
+exports.filterPackagesWithUpdates = filterPackagesWithUpdates;
 
 
 /***/ }),

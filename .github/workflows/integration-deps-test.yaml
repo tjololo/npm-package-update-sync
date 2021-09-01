@@ -55,6 +55,7 @@ jobs:
           root-folder: __tests__/it/package-lock-v2
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
+        if: steps.update.outputs.updated
         with:
           title: "PR from integration tests package-lock v2"
           branch: "tests/npm-updates-integration-v2"
