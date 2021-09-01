@@ -77,6 +77,7 @@ jobs:
 | Name | Description | Default |
 | ---- | ----------- | ------- |
 | `root-folder` | relative path from repository root where the action should look for `package.json` files | `.` |
+| `ignore-folders` | folders to ignore during update including subfolder. path is relative to root-folder input | `''` |
 | `recursive` | wether or not the action should look for package.json in sub-folders and update all of them | `true` |
 | `comment-updated` | wheter or not the dependencies that are update should be included in the body output | `false` |
 

@@ -28,6 +28,8 @@ jobs:
           recursive: false
           comment-updated: true
           root-folder: __tests__/it/package-lock-v1
+          ignore-folders: |
+            v1-subfolder
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -53,6 +55,8 @@ jobs:
           recursive: false
           comment-updated: true
           root-folder: __tests__/it/package-lock-v2
+          ignore-folders: |
+            v2-subfolder
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         if: steps.update.outputs.updated == 'true'

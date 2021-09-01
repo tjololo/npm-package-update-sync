@@ -49,8 +49,9 @@ function execute() {
             const recursive = core.getBooleanInput("recursive");
             const commentUpdated = core.getBooleanInput("comment-updated");
             const rootFolder = core.getInput("root-folder");
+            const ignoreFolders = yield (0, utils_1.mapIgnoreList)(core.getMultilineInput("ignore-folders").filter(f => f !== ""), rootFolder);
             core.startGroup("Find modules");
-            const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive);
+            const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive, ignoreFolders);
             core.endGroup();
             let body = "";
             let hasUpdates = false;
@@ -255,17 +256,22 @@ exports.getAllProjects = void 0;
 const core_1 = __nccwpck_require__(186);
 const fs_1 = __nccwpck_require__(747);
 const path_1 = __nccwpck_require__(622);
-const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProjects = (rootFolder, recursive, ignoreFolders = [], result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
         const files = (0, fs_1.readdirSync)(rootFolder);
         const regex = /package.json$/;
         for (const fileName of files) {
             const file = (0, path_1.join)(rootFolder, fileName);
             if ((0, fs_1.statSync)(file).isDirectory()) {
-                try {
-                    result = yield (0, exports.getAllProjects)(file, recursive, result);
+                if (!folderInIgnoreList(file, ignoreFolders)) {
+                    try {
+                        result = yield (0, exports.getAllProjects)(file, recursive, ignoreFolders, result);
+                    }
+                    catch (error) {
+                        continue;
+                    }
                 }
-                catch (error) {
+                else {
                     continue;
                 }
             }
@@ -283,6 +289,9 @@ const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0,
     }
 });
 exports.getAllProjects = getAllProjects;
+const folderInIgnoreList = (folder, ignoreFolders) => {
+    return ignoreFolders.indexOf(folder) !== -1;
+};
 
 
 /***/ }),
@@ -421,7 +430,7 @@ exports.PrBodyHelper = PrBodyHelper;
 /***/ }),
 
 /***/ 918:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -434,7 +443,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterPackagesWithUpdates = exports.escapeString = void 0;
+exports.mapIgnoreList = exports.filterPackagesWithUpdates = exports.escapeString = void 0;
+const path_1 = __nccwpck_require__(622);
 const map = {
     '*': '\\*',
     '#': '\\#',
@@ -459,6 +469,10 @@ const filterPackagesWithUpdates = (packages) => __awaiter(void 0, void 0, void 0
     return packages.filter(p => p.wanted !== p.current);
 });
 exports.filterPackagesWithUpdates = filterPackagesWithUpdates;
+const mapIgnoreList = (ignoreList, rootFolder) => __awaiter(void 0, void 0, void 0, function* () {
+    return ignoreList.map(ignore => (0, path_1.join)(rootFolder, ignore));
+});
+exports.mapIgnoreList = mapIgnoreList;
 
 
 /***/ }),
