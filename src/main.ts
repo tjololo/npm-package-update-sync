@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import { statSync } from 'fs'
 import * as path from 'path'
-import { join } from 'path/posix'
 import { NpmCommandManager } from './npm-command-manager'
 import { getAllProjects } from './npm-project-locator'
 import { PackageJsonUpdater } from './packagejson-updater'
