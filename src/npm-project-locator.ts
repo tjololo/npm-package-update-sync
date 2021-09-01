@@ -37,6 +37,5 @@ export const getAllProjects = async (
 }
 
 const folderInIgnoreList = (folder: string, ignoreFolders: string[]): boolean => {
-    const res = ignoreFolders.indexOf(folder) !== -1
-    return res
+    return ignoreFolders.indexOf(folder) !== -1
 }

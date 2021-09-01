@@ -290,8 +290,7 @@ const getAllProjects = (rootFolder, recursive, ignoreFolders = [], result = []) 
 });
 exports.getAllProjects = getAllProjects;
 const folderInIgnoreList = (folder, ignoreFolders) => {
-    const res = ignoreFolders.indexOf(folder) !== -1;
-    return res;
+    return ignoreFolders.indexOf(folder) !== -1;
 };
 
 
