@@ -1,10 +1,12 @@
 import { info } from "@actions/core"
 import { readdirSync, statSync } from "fs"
 import { join } from "path"
+import { stringify } from "querystring"
 
 export const getAllProjects = async (
     rootFolder: string,
     recursive: boolean,
+    ignoreFolders: string[] = [],
     result: string[] = []
 ): Promise<string[]> => {
     if (recursive) {
@@ -13,9 +15,13 @@ export const getAllProjects = async (
         for (const fileName of files) {
             const file = join(rootFolder, fileName)
             if (statSync(file).isDirectory()) {
-                try {
-                    result = await getAllProjects(file, recursive, result)
-                } catch (error) {
+                if (!folderInIgnoreList(file, ignoreFolders)) {
+                    try {
+                        result = await getAllProjects(file, recursive, ignoreFolders, result)
+                    } catch (error) {
+                        continue
+                    }
+                } else {
                     continue
                 }
             } else {
@@ -29,4 +35,9 @@ export const getAllProjects = async (
     } else {
         return [rootFolder]
     }
+}
+
+const folderInIgnoreList = (folder: string, ignoreFolders: string[]): boolean => {
+    const res = ignoreFolders.indexOf(folder) !== -1
+    return res
 }

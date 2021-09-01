@@ -128,3 +128,17 @@ test("returns empty list if all version up to date", async() => {
     ]
     expect(await utils.filterPackagesWithUpdates(input)).toEqual(expected)
 });
+
+test("mapIgnoreList prefixes all elemts with rootFolder", async() =>{
+    const expected = [
+        "rootFolder/m1",
+        "rootFolder/m2",
+        "rootFolder/m3"
+    ]
+    const input = [
+        "m1",
+        "m2",
+        "m3"
+    ]
+    expect(await utils.mapIgnoreList(input, "rootFolder")).toEqual(expected)
+})

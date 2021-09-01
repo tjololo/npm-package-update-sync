@@ -1,10 +1,10 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -49,8 +49,9 @@ function execute() {
             const recursive = core.getBooleanInput("recursive");
             const commentUpdated = core.getBooleanInput("comment-updated");
             const rootFolder = core.getInput("root-folder");
+            const ignoreFolders = yield (0, utils_1.mapIgnoreList)(core.getMultilineInput("ignore-folders").filter(f => f !== ""), rootFolder);
             core.startGroup("Find modules");
-            const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive);
+            const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive, ignoreFolders);
             core.endGroup();
             let body = "";
             let hasUpdates = false;
@@ -106,6 +107,7 @@ execute();
 /***/ 557:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -240,6 +242,7 @@ exports.NpmOutput = NpmOutput;
 /***/ 119:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -255,17 +258,22 @@ exports.getAllProjects = void 0;
 const core_1 = __nccwpck_require__(186);
 const fs_1 = __nccwpck_require__(747);
 const path_1 = __nccwpck_require__(622);
-const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProjects = (rootFolder, recursive, ignoreFolders = [], result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
         const files = (0, fs_1.readdirSync)(rootFolder);
         const regex = /package.json$/;
         for (const fileName of files) {
             const file = (0, path_1.join)(rootFolder, fileName);
             if ((0, fs_1.statSync)(file).isDirectory()) {
-                try {
-                    result = yield (0, exports.getAllProjects)(file, recursive, result);
+                if (!folderInIgnoreList(file, ignoreFolders)) {
+                    try {
+                        result = yield (0, exports.getAllProjects)(file, recursive, ignoreFolders, result);
+                    }
+                    catch (error) {
+                        continue;
+                    }
                 }
-                catch (error) {
+                else {
                     continue;
                 }
             }
@@ -283,6 +291,10 @@ const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0,
     }
 });
 exports.getAllProjects = getAllProjects;
+const folderInIgnoreList = (folder, ignoreFolders) => {
+    const res = ignoreFolders.indexOf(folder) !== -1;
+    return res;
+};
 
 
 /***/ }),
@@ -290,6 +302,7 @@ exports.getAllProjects = getAllProjects;
 /***/ 82:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -368,6 +381,7 @@ exports.PackageJsonUpdater = PackageJsonUpdater;
 /***/ 98:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -421,8 +435,9 @@ exports.PrBodyHelper = PrBodyHelper;
 /***/ }),
 
 /***/ 918:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -434,7 +449,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterPackagesWithUpdates = exports.escapeString = void 0;
+exports.mapIgnoreList = exports.filterPackagesWithUpdates = exports.escapeString = void 0;
+const posix_1 = __nccwpck_require__(301);
 const map = {
     '*': '\\*',
     '#': '\\#',
@@ -459,6 +475,10 @@ const filterPackagesWithUpdates = (packages) => __awaiter(void 0, void 0, void 0
     return packages.filter(p => p.wanted !== p.current);
 });
 exports.filterPackagesWithUpdates = filterPackagesWithUpdates;
+const mapIgnoreList = (ignoreList, rootFolder) => __awaiter(void 0, void 0, void 0, function* () {
+    return ignoreList.map(ignore => (0, posix_1.join)(rootFolder, ignore));
+});
+exports.mapIgnoreList = mapIgnoreList;
 
 
 /***/ }),
@@ -466,6 +486,7 @@ exports.filterPackagesWithUpdates = filterPackagesWithUpdates;
 /***/ 351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -564,6 +585,7 @@ function escapeProperty(s) {
 /***/ 186:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -875,6 +897,7 @@ exports.getState = getState;
 /***/ 717:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 // For internal use, subject to change.
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -923,6 +946,7 @@ exports.issueCommand = issueCommand;
 /***/ 278:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -968,6 +992,7 @@ exports.toCommandProperties = toCommandProperties;
 /***/ 514:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1077,6 +1102,7 @@ exports.getExecOutput = getExecOutput;
 /***/ 159:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1701,6 +1727,7 @@ class ExecState extends events.EventEmitter {
 /***/ 962:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1884,6 +1911,7 @@ exports.getCmdPath = getCmdPath;
 /***/ 436:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2228,9 +2256,18 @@ function copyFile(srcFile, destFile, force) {
 
 /***/ }),
 
+/***/ 301:
+/***/ ((module) => {
+
+module.exports = eval("require")("path/posix");
+
+
+/***/ }),
+
 /***/ 357:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("assert");
 
 /***/ }),
@@ -2238,6 +2275,7 @@ module.exports = require("assert");
 /***/ 129:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("child_process");
 
 /***/ }),
@@ -2245,6 +2283,7 @@ module.exports = require("child_process");
 /***/ 614:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("events");
 
 /***/ }),
@@ -2252,6 +2291,7 @@ module.exports = require("events");
 /***/ 747:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("fs");
 
 /***/ }),
@@ -2259,6 +2299,7 @@ module.exports = require("fs");
 /***/ 87:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("os");
 
 /***/ }),
@@ -2266,6 +2307,7 @@ module.exports = require("os");
 /***/ 622:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("path");
 
 /***/ }),
@@ -2273,6 +2315,7 @@ module.exports = require("path");
 /***/ 304:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("string_decoder");
 
 /***/ }),
@@ -2280,6 +2323,7 @@ module.exports = require("string_decoder");
 /***/ 213:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("timers");
 
 /***/ }),
@@ -2287,6 +2331,7 @@ module.exports = require("timers");
 /***/ 669:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("util");
 
 /***/ })

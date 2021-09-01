@@ -8,6 +8,10 @@ inputs:
     description: 'relative path from repository root where the action should look for `package.json` files'
     required: true
     default: '.'
+  ignore-folders:
+    description: 'folders to ignore during update including subfolder. path is relative to root-folder input'
+    required: true
+    default: ''
   recursive:
     description: 'wether or not the action should look for package.json in sub-folders and update all of them'
     required: true

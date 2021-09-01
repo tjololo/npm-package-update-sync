@@ -1,19 +1,21 @@
 import * as core from '@actions/core'
 import { statSync } from 'fs'
 import * as path from 'path'
+import { join } from 'path/posix'
 import { NpmCommandManager } from './npm-command-manager'
 import { getAllProjects } from './npm-project-locator'
 import { PackageJsonUpdater } from './packagejson-updater'
 import { PrBodyHelper } from './pr-body'
-import { filterPackagesWithUpdates } from './utils'
+import { filterPackagesWithUpdates, mapIgnoreList } from './utils'
 
 async function execute(): Promise<void> {
     try {
         const recursive = core.getBooleanInput("recursive")
         const commentUpdated = core.getBooleanInput("comment-updated")
         const rootFolder = core.getInput("root-folder")
+        const ignoreFolders = await mapIgnoreList(core.getMultilineInput("ignore-folders").filter(f => f !== ""), rootFolder)
         core.startGroup("Find modules")
-        const folders: string[] = await getAllProjects(rootFolder, recursive)
+        const folders: string[] = await getAllProjects(rootFolder, recursive, ignoreFolders)
         core.endGroup()
         let body = ""
         let hasUpdates = false
