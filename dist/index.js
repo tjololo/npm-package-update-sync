@@ -49,12 +49,12 @@ function execute() {
             const commentUpdated = core.getBooleanInput("comment-updated");
             const rootFolder = core.getInput("root-folder");
             core.startGroup("Find modules");
-            const folders = yield npm_project_locator_1.getAllProjects(rootFolder, recursive);
+            const folders = yield (0, npm_project_locator_1.getAllProjects)(rootFolder, recursive);
             core.endGroup();
             let body = "";
             for (const folder of folders) {
                 const packageJson = path.join(folder, 'package.json');
-                if (fs_1.statSync(packageJson).isFile()) {
+                if ((0, fs_1.statSync)(packageJson).isFile()) {
                     const npm = yield npm_command_manager_1.NpmCommandManager.create(folder);
                     core.startGroup(`npm install ${packageJson}`);
                     yield npm.install();
@@ -78,7 +78,15 @@ function execute() {
             core.setOutput("body", body);
         }
         catch (e) {
-            core.setFailed(e.message);
+            if (e instanceof Error) {
+                core.setFailed(e.message);
+            }
+            else if (typeof e === 'string') {
+                core.setFailed(e);
+            }
+            else {
+                core.setFailed("Some unknown error occured, please see logs");
+            }
         }
     });
 }
@@ -139,7 +147,7 @@ class NpmCommandManager {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.exec(['install']);
             if (result.exitCode !== 0) {
-                core_1.error(`npm install returned non-zero exitcode: ${result.exitCode}`);
+                (0, core_1.error)(`npm install returned non-zero exitcode: ${result.exitCode}`);
                 throw new Error(`npm install returned non-zero exitcode: ${result.exitCode}`);
             }
         });
@@ -168,7 +176,7 @@ class NpmCommandManager {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.exec(['install', '--package-lock-only']);
             if (result.exitCode !== 0) {
-                core_1.error(`npm update returned non-zero exitcode: ${result.exitCode}`);
+                (0, core_1.error)(`npm update returned non-zero exitcode: ${result.exitCode}`);
                 throw new Error(`npm install --package-lock-only returned non-zero exitcode: ${result.exitCode}`);
             }
         });
@@ -241,13 +249,13 @@ const fs_1 = __nccwpck_require__(747);
 const path_1 = __nccwpck_require__(622);
 const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (recursive) {
-        const files = fs_1.readdirSync(rootFolder);
+        const files = (0, fs_1.readdirSync)(rootFolder);
         const regex = /package.json$/;
         for (const fileName of files) {
-            const file = path_1.join(rootFolder, fileName);
-            if (fs_1.statSync(file).isDirectory()) {
+            const file = (0, path_1.join)(rootFolder, fileName);
+            if ((0, fs_1.statSync)(file).isDirectory()) {
                 try {
-                    result = yield exports.getAllProjects(file, recursive, result);
+                    result = yield (0, exports.getAllProjects)(file, recursive, result);
                 }
                 catch (error) {
                     continue;
@@ -255,7 +263,7 @@ const getAllProjects = (rootFolder, recursive, result = []) => __awaiter(void 0,
             }
             else {
                 if (regex.test(file)) {
-                    core_1.info(`module found : ${file}`);
+                    (0, core_1.info)(`module found : ${file}`);
                     result.push(rootFolder);
                 }
             }
@@ -313,7 +321,7 @@ class PackageJsonUpdater {
     }
     updatePackageJson(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
-            const packageJsonContent = fs_1.readFileSync(this.packageJson, 'utf8');
+            const packageJsonContent = (0, fs_1.readFileSync)(this.packageJson, 'utf8');
             const packageJsonObject = JSON.parse(packageJsonContent);
             for (const outdatedPackage of outdated) {
                 core.info(`${outdatedPackage.name} is ${outdatedPackage.current} wanting ${outdatedPackage.wanted}`);
@@ -336,7 +344,7 @@ class PackageJsonUpdater {
                     }
                 }
             }
-            fs_1.writeFileSync(this.packageJson, JSON.stringify(packageJsonObject, null, 2));
+            (0, fs_1.writeFileSync)(this.packageJson, JSON.stringify(packageJsonObject, null, 2));
         });
     }
     shouldUpdatePackageJson(version) {
@@ -373,7 +381,7 @@ class PrBodyHelper {
     buildPRBody(outdated) {
         return __awaiter(this, void 0, void 0, function* () {
             let updatesOutOfScope = [];
-            let body = `# Module: ${yield utils_1.escapeString(this.rootFolder)} \n`;
+            let body = `# Module: ${yield (0, utils_1.escapeString)(this.rootFolder)} \n`;
             if (this.commentUpdated) {
                 body += `### Merging this PR will update the following dependencies\n`;
             }
@@ -574,7 +582,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
+exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
 const command_1 = __nccwpck_require__(351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(278);
@@ -752,19 +760,30 @@ exports.debug = debug;
 /**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function error(message) {
-    command_1.issue('error', message instanceof Error ? message.toString() : message);
+function error(message, properties = {}) {
+    command_1.issueCommand('error', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.error = error;
 /**
- * Adds an warning issue
+ * Adds a warning issue
  * @param message warning issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function warning(message) {
-    command_1.issue('warning', message instanceof Error ? message.toString() : message);
+function warning(message, properties = {}) {
+    command_1.issueCommand('warning', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.warning = warning;
+/**
+ * Adds a notice issue
+ * @param message notice issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
+ */
+function notice(message, properties = {}) {
+    command_1.issueCommand('notice', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
+exports.notice = notice;
 /**
  * Writes info to log with console.log.
  * @param message info message
@@ -896,7 +915,7 @@ exports.issueCommand = issueCommand;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.toCommandValue = void 0;
+exports.toCommandProperties = exports.toCommandValue = void 0;
 /**
  * Sanitizes an input into a string so it can be passed into issueCommand safely
  * @param input input to sanitize into a string
@@ -911,6 +930,25 @@ function toCommandValue(input) {
     return JSON.stringify(input);
 }
 exports.toCommandValue = toCommandValue;
+/**
+ *
+ * @param annotationProperties
+ * @returns The command properties to send with the actual annotation command
+ * See IssueCommandProperties: https://github.com/actions/runner/blob/main/src/Runner.Worker/ActionCommandManager.cs#L646
+ */
+function toCommandProperties(annotationProperties) {
+    if (!Object.keys(annotationProperties).length) {
+        return {};
+    }
+    return {
+        title: annotationProperties.title,
+        line: annotationProperties.startLine,
+        endLine: annotationProperties.endLine,
+        col: annotationProperties.startColumn,
+        endColumn: annotationProperties.endColumn
+    };
+}
+exports.toCommandProperties = toCommandProperties;
 //# sourceMappingURL=utils.js.map
 
 /***/ }),
