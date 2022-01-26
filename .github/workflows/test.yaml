@@ -22,7 +22,7 @@ jobs:
       - name: run jest test
         run: npm run test
       - name: SonarCloud Scan
-        if: matrix.node == '14'
+        if: matrix.node == '16'
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

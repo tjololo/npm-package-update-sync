@@ -27,5 +27,5 @@ outputs:
   updated:
     description: 'Returns true if any dependencies are updated'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
