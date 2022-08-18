@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/tjololo/npm-package-update-sync#readme",
   "dependencies": {
-    "@actions/core": "^1.4.0",
+    "@actions/core": "^1.9.1",
     "@actions/exec": "~1.0.0",
     "npm-check-updates": "^10.0.0"
   },
